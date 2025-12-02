@@ -1,0 +1,548 @@
+📝 Commit Message Format
+text
+
+Copy
+
+Download
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+🎯 Commit Types
+Major Changes
+feat - A new feature for the user
+
+`fix`` - A bug fix for the user
+
+perf - A performance improvement
+
+refactor - Code changes that neither fix bugs nor add features
+
+docs - Documentation only changes
+
+style - Changes that do not affect the meaning of the code
+
+test - Adding missing tests or correcting existing tests
+
+build - Changes that affect the build system or external dependencies
+
+ci - Changes to CI configuration files and scripts
+
+chore - Other changes that don't modify src or test files
+
+revert - Reverts a previous commit
+
+VR-Specific Types
+vr - Virtual Reality specific changes
+
+economy - Virtual economy system changes
+
+avatar - Avatar-related changes
+
+terminal - VirtualTerminal changes
+
+portal - VirtualPortal changes
+
+3d - 3D/Graphics related changes
+
+🌟 Scope Examples
+text
+
+Copy
+
+Download
+feat(vr): Add Oculus Quest 2 hand tracking support
+fix(economy): Fix VirtuCard balance calculation bug
+perf(avatar): Optimize avatar rendering for 1000+ concurrent users
+docs(api): Add API documentation for VirtualTerminal class
+test(portal): Add integration tests for cross-environment portals
+📋 Detailed Format
+Subject Line (Required)
+Keep under 50 characters
+
+Use imperative mood: "Add feature" not "Added feature"
+
+Don't end with a period
+
+Start with type and scope
+
+Good:
+
+text
+
+Copy
+
+Download
+feat(vr): Implement hand gesture recognition
+Bad:
+
+text
+
+Copy
+
+Download
+Implemented hand gesture recognition for VR.
+Body (Optional for small changes)
+Separate from subject with blank line
+
+Wrap at 72 characters
+
+Explain WHAT and WHY, not HOW
+
+Use bullet points for multiple changes
+
+Footer (Optional)
+Reference issues: Closes #123, Fixes #456
+
+Breaking changes: BREAKING CHANGE: <explanation>
+
+Related PRs: See also #789
+
+🎮 VR Development Examples
+Avatar System
+text
+
+Copy
+
+Download
+feat(avatar): Add facial expression system to avatars
+
+- Implement 6 basic emotion states (happy, sad, angry, etc.)
+- Add real-time emotion blending
+- Support custom emotion presets
+
+Closes #123
+See also #124 for related emotion API
+Virtual Economy
+text
+
+Copy
+
+Download
+fix(economy): Resolve race condition in concurrent transactions
+
+- Add transaction locking to VirtuCard operations
+- Implement retry mechanism for failed transfers
+- Add transaction rollback on network failure
+
+Fixes #456
+BREAKING CHANGE: Transaction API now returns Promise instead of immediate result
+3D Graphics
+text
+
+Copy
+
+Download
+perf(3d): Optimize mesh rendering for low-end VR headsets
+
+- Implement level-of-detail (LOD) system
+- Add mesh compression for network transfer
+- Reduce draw calls by 40%
+
+Addresses performance issues in #789
+🚀 Special Commit Messages
+Breaking Changes
+text
+
+Copy
+
+Download
+feat(api): Redesign VirtualTerminal REST API
+
+- Remove deprecated `list_items` endpoint
+- Add new paginated `inventory` endpoint
+- Change response format from XML to JSON
+
+BREAKING CHANGE: All existing API clients must update to v2.0
+Migration guide: https://kursarscript.dev/migration/v1-to-v2
+Security Fixes
+text
+
+Copy
+
+Download
+fix(security): Patch privilege escalation in avatar permissions
+
+- Add role-based access control (RBAC)
+- Implement permission validation middleware
+- Add audit logging for permission changes
+
+Security: CVE-2024-XXXX
+Reported by: security@kursarscript.dev
+Release Commits
+text
+
+Copy
+
+Download
+chore(release): v1.2.0 - Virtual Marketplace Update
+
+## 🚀 New Features
+- Virtual auction system
+- Real-time bidding interface
+- Cross-platform item trading
+
+## 🐛 Bug Fixes
+- Fixed inventory synchronization issue
+- Resolved currency conversion rounding errors
+
+## 📚 Documentation
+- Updated marketplace API docs
+- Added auction tutorial
+
+Closes #100-#110
+📊 Workflow Examples
+Feature Development
+text
+
+Copy
+
+Download
+# Start with a feature branch
+git checkout -b feat/vr-hand-tracking
+
+# Make commits as you develop
+git commit -m "feat(vr): Add basic hand skeleton detection"
+git commit -m "feat(vr): Implement finger curl detection"
+git commit -m "test(vr): Add hand tracking unit tests"
+git commit -m "docs(vr): Add hand tracking API documentation"
+Bug Fixing
+text
+
+Copy
+
+Download
+# Create bug fix branch
+git checkout -b fix/economy-transaction-bug
+
+# Investigate and fix
+git commit -m "fix(economy): Fix decimal precision in currency conversion"
+git commit -m "test(economy): Add test for currency edge cases"
+Documentation Updates
+text
+
+Copy
+
+Download
+git commit -m "docs(api): Update VirtualTerminal class documentation"
+git commit -m "docs(tutorial): Add VR economy setup guide"
+🔧 Setup Instructions
+1. Configure Git to use this template
+bash
+
+Copy
+
+Download
+# Set as default commit message template
+git config commit.template .gitmessage
+
+# For global use (all projects)
+git config --global commit.template ~/.gitmessage
+2. Create alias for convenience
+bash
+
+Copy
+
+Download
+# Add to ~/.gitconfig
+[alias]
+    ci = "commit"
+    cm = "commit -m"
+    amend = "commit --amend"
+    wip = "commit -m 'wip: Work in progress'"
+    done = "commit -m 'feat: Complete feature implementation'"
+3. Pre-commit hooks (optional)
+Create .git/hooks/commit-msg:
+
+bash
+
+Copy
+
+Download
+#!/bin/bash
+# Validate commit message format
+MSG_FILE=$1
+MSG=$(cat "$MSG_FILE")
+
+# Check for conventional commit format
+if ! echo "$MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|vr|economy|avatar|terminal|portal|3d)(\(.*\))?: .{1,50}$"; then
+    echo "ERROR: Commit message must follow conventional format!"
+    echo "Example: feat(vr): Add hand tracking support"
+    exit 1
+fi
+🎨 Emoji Guide (Optional)
+You can add emojis to commit messages for visual clarity:
+
+text
+
+Copy
+
+Download
+🎮 vr: Virtual Reality features
+💰 economy: Virtual economy changes
+👤 avatar: Avatar system updates
+🏪 terminal: VirtualTerminal improvements
+🌐 portal: Cross-environment features
+🎨 3d: Graphics/3D updates
+🐛 fix: Bug fixes
+📚 docs: Documentation
+🚀 perf: Performance improvements
+✅ test: Testing
+🔧 chore: Maintenance
+Example with emojis:
+
+text
+
+Copy
+
+Download
+🎮 feat(vr): Add full-body IK system for avatars
+💰 fix(economy): Fix transaction fees calculation
+📝 Commit Message Examples
+Simple Fix
+text
+
+Copy
+
+Download
+fix(parser): Handle empty string literals correctly
+Feature with Body
+text
+
+Copy
+
+Download
+feat(economy): Implement virtual stock market system
+
+- Add real-time stock price updates
+- Implement buy/sell order matching
+- Add market depth visualization
+- Support limit and market orders
+
+Closes #234
+Related to #235 (portfolio tracking)
+Performance Improvement
+text
+
+Copy
+
+Download
+perf(3d): Optimize texture loading for VR headsets
+
+- Implement texture streaming
+- Add texture compression (ASTC, ETC2)
+- Reduce VRAM usage by 60%
+- Maintain visual quality for 95% of cases
+
+Benchmarks show 2x faster load times
+Addresses performance issues in #456
+Documentation Update
+text
+
+Copy
+
+Download
+docs(api): Complete VirtualPortal REST API documentation
+
+- Add endpoint examples for all methods
+- Include error code reference
+- Add rate limiting information
+- Include authentication examples
+
+See API specification in docs/api/virtual-portal.md
+Breaking Change
+text
+
+Copy
+
+Download
+refactor(api): Migrate to GraphQL from REST
+
+- Replace REST endpoints with GraphQL schema
+- Add query/mutation documentation
+- Update client SDKs
+
+BREAKING CHANGE: All REST endpoints deprecated
+Migration path: Use GraphQL queries instead
+See migration guide at docs/migration/rest-to-graphql.md
+🔍 Review Checklist
+Before committing, ask:
+
+✅ Type: Is the commit type correct?
+
+✅ Scope: Is the scope specific enough?
+
+✅ Subject: Is it under 50 chars? Imperative mood?
+
+✅ Body: Does it explain WHAT and WHY?
+
+✅ Footer: Are issues referenced? Breaking changes noted?
+
+✅ Tests: Are tests included for new features?
+
+✅ Docs: Is documentation updated if needed?
+
+🚨 Common Mistakes to Avoid
+❌ Too Vague
+text
+
+Copy
+
+Download
+fix: Fix stuff
+✅ Specific
+text
+
+Copy
+
+Download
+fix(economy): Fix balance calculation for negative amounts
+❌ Past Tense
+text
+
+Copy
+
+Download
+feat: Added new feature
+✅ Imperative Mood
+text
+
+Copy
+
+Download
+feat: Add new feature
+❌ Too Long
+text
+
+Copy
+
+Download
+feat: Implement the new virtual reality hand tracking system that we discussed in last week's meeting with the 3D team
+✅ Concise
+text
+
+Copy
+
+Download
+feat(vr): Add hand tracking with 26 degrees of freedom
+📈 Benefits of This Format
+Automated Changelogs: Generate changelogs from commit history
+
+Better Collaboration: Clear communication about changes
+
+Efficient Review: Understand changes at a glance
+
+Debugging: Track down when features/bugs were introduced
+
+Project Management: Link commits to issues and features
+
+🔗 Integration with Tools
+GitHub Actions
+yaml
+
+Copy
+
+Download
+name: Validate Commits
+on: [push, pull_request]
+jobs:
+  lint-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: wagoid/commitlint-github-action@v5
+Commitizen (Interactive)
+bash
+
+Copy
+
+Download
+# Install commitizen
+pip install commitizen
+
+# Make a commit
+cz commit
+Semantic Release
+json
+
+Copy
+
+Download
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/github"
+  ]
+}
+📚 Additional Resources
+Conventional Commits Specification
+
+Angular Commit Guidelines
+
+VR Development Best Practices
+
+💡 Pro Tips
+1. Squash Commits for Clean History
+bash
+
+Copy
+
+Download
+# Interactive rebase to squash commits
+git rebase -i HEAD~5
+
+# Then use "squash" or "fixup" to combine commits
+2. Use Git Hooks for Automation
+bash
+
+Copy
+
+Download
+# .git/hooks/prepare-commit-msg
+#!/bin/bash
+# Auto-add issue number if in branch name
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
+if echo "$BRANCH_NAME" | grep -qE ".*-[0-9]+"; then
+    ISSUE_NUMBER=$(echo "$BRANCH_NAME" | grep -oE "[0-9]+$")
+    echo -e "\n\nCloses #$ISSUE_NUMBER" >> "$1"
+fi
+3. Template Variations for Different Teams
+bash
+
+Copy
+
+Download
+# For economy team
+echo "economy|portal|terminal: " > .gitmessage-economy
+
+# For VR team
+echo "vr|avatar|3d: " > .gitmessage-vr
+4. Commit Message Templates in IDEs
+VS Code Settings:
+
+json
+
+Copy
+
+Download
+{
+  "git.inputValidationSubjectLength": 50,
+  "git.inputValidationLength": 72,
+  "git.autoStash": true
+}
+PyCharm Commit Template:
+
+text
+
+Copy
+
+Download
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+✨ Remember: Good commit messages tell the story of your project's development. Make every commit count! 🚀
