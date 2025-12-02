@@ -1,0 +1,241 @@
+Requirements - KursarScript (KSPL)
+🏗️ System Requirements
+Minimum Requirements
+Python: 3.7 or higher
+
+RAM: 512MB minimum, 1GB recommended
+
+Disk Space: 50MB free space
+
+OS: Windows 10+, macOS 10.14+, or Linux (Ubuntu 18.04+, Fedora 30+, etc.)
+
+Recommended for VR Development
+RAM: 4GB or more
+
+GPU: Any modern graphics card with VR support (optional)
+
+Storage: 200MB for development projects
+
+Python Packages: As specified below
+
+📦 Python Package Dependencies
+Core Dependencies (Automatically installed)
+These are required for basic KursarScript functionality:
+
+bash
+
+Copy
+
+Download
+# KursarScript will automatically install these:
+- No external dependencies for core interpreter
+- Pure Python implementation
+Optional Dependencies (Install as needed)
+For Virtual Reality Integration
+bash
+
+Copy
+
+Download
+# Enhanced VR features
+pip install pygame>=2.0.0        # For 2D VR simulation
+pip install numpy>=1.21.0        # For mathematical operations in VR space
+For Advanced Graphics
+bash
+
+Copy
+
+Download
+# 3D visualization support
+pip install pyglet>=1.5.0        # For 3D graphics and windowing
+pip install pyrr>=0.10.0         # For 3D mathematics
+For Web Integration
+bash
+
+Copy
+
+Download
+# Web-based VR environments
+pip install flask>=2.0.0         # For web server integration
+pip install websockets>=10.0     # For real-time WebSocket communication
+Development Dependencies
+bash
+
+Copy
+
+Download
+# For contributing to KursarScript development
+pip install pytest>=6.0.0        # Testing framework
+pip install black>=21.0.0        # Code formatting
+pip install flake8>=4.0.0        # Code linting
+pip install mypy>=0.900          # Type checking
+🎮 VR Environment Requirements
+For Native VR Integration
+VR Headset: Optional - HTC Vive, Oculus Rift, or compatible
+
+SteamVR: Version 1.0 or higher (for headset integration)
+
+VR Runtime: OpenXR compatible runtime
+
+For Desktop/Simulation Mode
+Display: 1024x768 minimum resolution
+
+Input: Mouse and keyboard (game controllers optional)
+
+Audio: Optional - for immersive experiences
+
+🚀 Quick Installation
+Basic Installation
+bash
+
+Copy
+
+Download
+# Install KursarScript core
+pip install kursarscript
+
+# Verify installation
+kursarscript --version
+Full Installation (All Features)
+bash
+
+Copy
+
+Download
+# Install with all optional dependencies
+pip install "kursarscript[full]"
+
+# Or install individually
+pip install kursarscript          # Core language
+pip install kursarscript-vr       # VR extensions
+pip install kursarscript-web      # Web integration
+Development Installation
+bash
+
+Copy
+
+Download
+# Clone the repository
+git clone https://github.com/yourusername/kursarscript.git
+cd kursarscript
+
+# Install in development mode
+pip install -e ".[dev]"
+
+# Run tests
+pytest tests/
+🔧 Platform-Specific Notes
+Windows
+Python 3.7+ from Microsoft Store or python.org
+
+Ensure Python is added to PATH
+
+Administrator rights not required
+
+macOS
+Python 3.7+ via Homebrew: brew install python
+
+May need to install command line tools: xcode-select --install
+
+Linux (Ubuntu/Debian)
+bash
+
+Copy
+
+Download
+# Install Python 3.8+
+sudo apt update
+sudo apt install python3.8 python3-pip
+
+# Install KursarScript
+pip3 install kursarscript
+Linux (Fedora/RHEL)
+bash
+
+Copy
+
+Download
+# Install Python 3.8+
+sudo dnf install python3.8 python3-pip
+
+# Install KursarScript
+pip3 install kursarscript
+📊 Version Compatibility
+KursarScript	Python	Status
+1.0.x	3.7-3.11	✅ Fully Supported
+1.0.x	3.6	⚠️ Limited Support
+1.0.x	< 3.6	❌ Not Supported
+🧪 Testing Your Setup
+After installation, run these commands to verify everything works:
+
+bash
+
+Copy
+
+Download
+# Check installation
+kursarscript --version
+
+# Run the test script
+kursarscript examples/virtual_economy.kspl
+
+# Start interactive mode
+kursarscript -i
+
+# Test VR environment (if installed)
+kursarscript -v examples/vr_demo.kspl
+🔄 Upgrading
+bash
+
+Copy
+
+Download
+# Upgrade to latest version
+pip install --upgrade kursarscript
+
+# Upgrade specific components
+pip install --upgrade kursarscript-vr
+❓ Troubleshooting
+Common Issues
+"Command not found"
+
+bash
+
+Copy
+
+Download
+# Add Python Scripts to PATH (Windows)
+setx PATH "%PATH%;C:\Python38\Scripts"
+
+# Or use Python module directly
+python -m kursarscript.cli --version
+Permission Errors
+
+bash
+
+Copy
+
+Download
+# Use user installation
+pip install --user kursarscript
+Missing Dependencies
+
+bash
+
+Copy
+
+Download
+# Install with upgrade flag
+pip install --upgrade --force-reinstall kursarscript
+Getting Help
+Check GitHub Issues
+
+Join Discord Community
+
+Email: support@kursarscript.dev
+
+📝 License Requirements
+KursarScript is MIT Licensed - free for personal, educational, and commercial use. No special licenses required.
+
+✨ Ready to build virtual economies? Install KursarScript today and start creating! 🚀
+
