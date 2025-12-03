@@ -1,5 +1,5 @@
 ![image alt
-](https://github.com/Infinite-Networker/KursarScript/blob/f7d4f63073b5ff31ce75e6d2d1a52fe82ce7aa1a/Adobe%20Express%20-%20file%20(12).png)
+](https://github.com/Infinite-Networker/KursarScript/blob/c6611414a7cd59c1349bc5061394b42bfd4065f9/My%20Official%20KursarScript%20GitHub%20Repository%20Logo%20for%20its%20ReadMe.png)
 
 # KursarScript
 KursarScript is a groundbreaking programming language designed specifically for virtual reality environments and digital economies. Create, manage, and scale virtual marketplaces, avatar interactions, and digital transactions with an intuitive syntax built for VR development.
