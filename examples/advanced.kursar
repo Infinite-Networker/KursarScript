@@ -1,0 +1,173 @@
+// KursarScript Advanced Features Example
+// Demonstrates: while loops, break, continue, inline method bodies
+
+print("=== 🚀 KursarScript Advanced Features Demo ===")
+print("")
+
+// ─────────────────────────────────────────────
+// 1. Inline single-line method bodies
+// ─────────────────────────────────────────────
+print("📦 1. Inline Method Bodies")
+
+class Vec2 {
+    field x = 0.0
+    field y = 0.0
+    fn init(px, py) { self.x = px  self.y = py }
+    fn show() { print("Vec2(", self.x, ",", self.y, ")") }
+    fn scale(factor) { self.x = self.x * factor  self.y = self.y * factor }
+}
+
+let v = Vec2(3.0, 4.0)
+v.show()
+v.scale(2.0)
+v.show()
+print("")
+
+// ─────────────────────────────────────────────
+// 2. While loop
+// ─────────────────────────────────────────────
+print("🔁 2. While Loops")
+
+let n = 1
+let factorial = 1
+while (n <= 6) {
+    factorial = factorial * n
+    n = n + 1
+}
+print("6! =", factorial)
+
+// Countdown
+let countdown = 5
+print("Countdown:")
+while (countdown > 0) {
+    print(" ", countdown, "...")
+    countdown = countdown - 1
+}
+print("  🚀 Launch!")
+print("")
+
+// ─────────────────────────────────────────────
+// 3. Break in for loop
+// ─────────────────────────────────────────────
+print("⛔ 3. Break in For Loop")
+
+let numbers = [10, 25, 7, 42, 3, 99, 16]
+let first_big = -1
+for num in numbers {
+    if (num > 30) {
+        first_big = num
+        break
+    }
+}
+print("First number > 30:", first_big)
+
+// Search with break
+let inventory = ["Dagger", "Sword", "Greatsword", "Bow", "Staff"]
+let found_weapon = "none"
+for weapon in inventory {
+    if (weapon == "Greatsword") {
+        found_weapon = weapon
+        break
+    }
+}
+print("Search result:", found_weapon)
+print("")
+
+// ─────────────────────────────────────────────
+// 4. Continue in for loop
+// ─────────────────────────────────────────────
+print("⏭️  4. Continue in For Loop")
+
+let scores = [85, 42, 91, 17, 76, 33, 88]
+let high_scores = 0
+let low_scores = 0
+for score in scores {
+    if (score < 50) {
+        low_scores = low_scores + 1
+        continue
+    }
+    high_scores = high_scores + 1
+}
+print("High scores (>=50):", high_scores)
+print("Low scores  (<50) :", low_scores)
+
+// Filter even numbers
+print("Even numbers in [1..10]:")
+for x in range(1, 11) {
+    if (x % 2 != 0) {
+        continue
+    }
+    print(" ", x)
+}
+print("")
+
+// ─────────────────────────────────────────────
+// 5. While with break
+// ─────────────────────────────────────────────
+print("🔄 5. While + Break (Simulated Search)")
+
+let haystack = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+let target = 9
+let idx = 0
+let position = -1
+while (idx < len(haystack)) {
+    if (haystack[idx] == target) {
+        position = idx
+        break
+    }
+    idx = idx + 1
+}
+print("Found", target, "at index:", position)
+print("")
+
+// ─────────────────────────────────────────────
+// 6. Combining all features: VR NPC system
+// ─────────────────────────────────────────────
+print("🤖 6. VR NPC System (Combined Features)")
+
+class NPC {
+    field name = ""
+    field health = 100
+    field alive = true
+    fn init(n, hp) { self.name = n  self.health = hp }
+    fn take_damage(dmg) { self.health = self.health - dmg }
+    fn check_alive() { self.alive = self.health > 0 }
+    fn status() { print(" •", self.name, "HP:", self.health, "Alive:", self.alive) }
+}
+
+let npcs = [
+    NPC("Goblin Scout",    30),
+    NPC("Orc Warrior",    120),
+    NPC("Dark Wizard",     80),
+    NPC("Stone Golem",    200),
+    NPC("Fire Dragon",    500)
+]
+
+print("Initial NPC roster:")
+for npc in npcs {
+    npc.status()
+}
+print("")
+
+// Battle simulation: player deals 90 damage per round, stops at first boss (hp>150)
+let round = 1
+print("⚔️  Battle simulation (90 dmg/round, skip bosses):")
+for npc in npcs {
+    if (npc.health > 150) {
+        print("  SKIPPING boss:", npc.name, "(too powerful!)")
+        continue
+    }
+    npc.take_damage(90)
+    npc.check_alive()
+    print("  Round", round, "→", npc.name, "takes 90 dmg. HP now:", npc.health)
+    round = round + 1
+}
+
+print("")
+print("Final NPC status:")
+for npc in npcs {
+    npc.status()
+}
+
+print("")
+print("✅ Advanced features demo complete!")

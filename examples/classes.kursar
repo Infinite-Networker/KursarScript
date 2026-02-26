@@ -1,0 +1,113 @@
+// KursarScript Classes Example
+// Demonstrates object-oriented programming in KSPL
+
+// === Basic Class ===
+class Animal {
+    field name = "Unknown"
+    field sound = "..."
+
+    fn init(animal_name, animal_sound) {
+        self.name = animal_name
+        self.sound = animal_sound
+    }
+
+    fn speak() {
+        print(self.name, "says:", self.sound)
+    }
+
+    fn describe() {
+        print("I am", self.name)
+    }
+}
+
+let dog = Animal("Rex", "Woof!")
+let cat = Animal("Whiskers", "Meow!")
+dog.speak()
+cat.speak()
+dog.describe()
+
+// === VR Entity Class ===
+class VREntity {
+    field entity_id = 0
+    field position_x = 0.0
+    field position_y = 0.0
+    field position_z = 0.0
+    field visible = true
+
+    fn init(eid, x, y, z) {
+        self.entity_id = eid
+        self.position_x = x
+        self.position_y = y
+        self.position_z = z
+    }
+
+    fn teleport(new_x, new_y, new_z) {
+        self.position_x = new_x
+        self.position_y = new_y
+        self.position_z = new_z
+        print("Entity", self.entity_id, "teleported to (", new_x, ",", new_y, ",", new_z, ")")
+    }
+
+    fn hide() {
+        self.visible = false
+        print("Entity", self.entity_id, "is now hidden")
+    }
+
+    fn show() {
+        self.visible = true
+        print("Entity", self.entity_id, "is now visible")
+    }
+}
+
+let player_entity = VREntity(1, 0.0, 1.8, 0.0)
+let npc_entity   = VREntity(2, 5.0, 0.0, 3.0)
+
+player_entity.teleport(10.0, 1.8, 5.0)
+npc_entity.hide()
+npc_entity.show()
+
+// === Item Class ===
+class RPGItem {
+    field item_name = ""
+    field item_type = "misc"
+    field damage = 0
+    field defense = 0
+    field magic_power = 0
+
+    fn init(iname, itype) {
+        self.item_name = iname
+        self.item_type = itype
+    }
+
+    fn set_stats(dmg, def_val, magic) {
+        self.damage = dmg
+        self.defense = def_val
+        self.magic_power = magic
+    }
+
+    fn describe() {
+        print("Item:", self.item_name, "| Type:", self.item_type)
+        print("  ATK:", self.damage, "DEF:", self.defense, "MGC:", self.magic_power)
+    }
+}
+
+let sword    = RPGItem("Dragon Sword", "weapon")
+let shield   = RPGItem("Tower Shield", "armor")
+let staff    = RPGItem("Elder Staff", "magic")
+
+sword.set_stats(150, 10, 0)
+shield.set_stats(5, 200, 0)
+staff.set_stats(20, 15, 300)
+
+sword.describe()
+shield.describe()
+staff.describe()
+
+// === Using a list of objects ===
+let items = [sword, shield, staff]
+print("\n📦 Full Inventory:")
+for item in items {
+    print(" •", item.item_name, "(", item.item_type, ")")
+}
+
+print("\n✅ Classes example complete!")

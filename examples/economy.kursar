@@ -1,0 +1,112 @@
+// KursarScript Economy Example
+// Demonstrates the built-in Virtual Economy system
+
+print("=== 💰 KursarScript Economy Demo ===")
+print("")
+
+// --- Create Avatars ---
+let merchant = Avatar("MerchantGuild", "merchant")
+let buyer    = Avatar("Shopper_01",    "buyer")
+let seller   = Avatar("Seller_99",     "seller")
+
+merchant.set_attribute("reputation", "legendary")
+buyer.set_attribute("spending_limit", 2000.0)
+seller.set_attribute("store_rating", 4.9)
+
+print("👤 Participants registered:")
+print(" -", merchant)
+print(" -", buyer)
+print(" -", seller)
+print("")
+
+// --- Set up VirtuCards ---
+merchant.virtucard = create_virtucard(merchant, 5000.0)
+buyer.virtucard    = create_virtucard(buyer,    1500.0)
+seller.virtucard   = create_virtucard(seller,   800.0)
+
+merchant.virtucard.set_security("maximum")
+buyer.virtucard.set_security("high")
+
+print("💳 VirtuCard balances:")
+print("  Merchant:", merchant.virtucard.balance, "credits")
+print("  Buyer:   ", buyer.virtucard.balance,    "credits")
+print("  Seller:  ", seller.virtucard.balance,   "credits")
+print("")
+
+// --- Build a Marketplace ---
+let marketplace = VirtualTerminal("Grand Bazaar", "general")
+
+let potion     = VirtualItem("Health Potion",     "consumable", 25.0)
+let sword_item = VirtualItem("Steel Sword",       "weapon",     200.0)
+let map_item   = VirtualItem("Treasure Map",      "quest",      500.0)
+let gem        = VirtualItem("Star Ruby",         "gem",        750.0)
+let spellbook  = VirtualItem("Arcane Tome",       "magic",      350.0)
+
+potion.set_rarity("common")
+sword_item.set_rarity("uncommon")
+map_item.set_rarity("rare")
+gem.set_rarity("epic")
+spellbook.set_rarity("rare")
+
+// Set item attributes
+gem.set_attribute("origin", "Dragon Hoard")
+spellbook.set_attribute("spells", 42)
+
+marketplace.list_item(potion)
+marketplace.list_item(sword_item)
+marketplace.list_item(map_item)
+marketplace.list_item(gem)
+marketplace.list_item(spellbook)
+
+print("🏪 Marketplace:", marketplace)
+print("📦 Items listed:", len(marketplace.get_inventory()))
+print("")
+
+// --- Shopping Session ---
+print("🛒 Shopping Session:")
+marketplace.purchase("Health Potion", buyer.virtucard)
+marketplace.purchase("Steel Sword",   buyer.virtucard)
+marketplace.purchase("Arcane Tome",   buyer.virtucard)
+
+print("")
+print("📊 Post-purchase balances:")
+print("  Buyer:", buyer.virtucard.balance, "credits")
+print("")
+
+// --- Peer-to-Peer Transfers ---
+print("🔄 P2P Transfers:")
+transfer(buyer.virtucard, seller.virtucard, 100.0)
+transfer(merchant.virtucard, buyer.virtucard, 250.0)
+
+// Attempt overdraft
+print("\n⚠️  Attempting overdraft transfer...")
+transfer(seller.virtucard, merchant.virtucard, 5000.0)
+
+print("")
+print("📊 Final Balances:")
+print("  Merchant:", merchant.virtucard.balance, "credits")
+print("  Buyer:   ", buyer.virtucard.balance,    "credits")
+print("  Seller:  ", seller.virtucard.balance,   "credits")
+
+// --- Transaction History ---
+print("")
+print("📜 Buyer's Transaction History:")
+let history = buyer.virtucard.get_history()
+for txn in history {
+    print(" •", txn)
+}
+
+// --- AI Smart Pricing ---
+print("")
+print("🤖 Smart Pricing Engine:")
+let base = 100.0
+let demand  = 1.8
+let rarity_mult = 3.0
+let smart = base * demand * rarity_mult
+print("  Base price:    $", base)
+print("  Demand factor:", demand)
+print("  Rarity mult:  ", rarity_mult)
+print("  ➜ Smart price: $", smart)
+
+print("")
+print("✅ Economy demo complete!")
