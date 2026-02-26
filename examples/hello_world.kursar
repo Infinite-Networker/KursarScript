@@ -1,0 +1,61 @@
+// KursarScript Hello World Example
+// Demonstrates the basics of KSPL syntax
+
+// === Variables & Printing ===
+let message = "Hello, Virtual World!"
+print(message)
+
+let version = 1.0
+let language = "KursarScript"
+print("Welcome to", language, "v", version)
+
+// === Arithmetic ===
+let a = 10
+let b = 3
+print("Addition:", a + b)
+print("Subtraction:", a - b)
+print("Multiplication:", a * b)
+print("Division:", a / b)
+
+// === Strings ===
+let greeting = "Hello"
+let name = "Explorer"
+print(greeting + ", " + name + "!")
+
+// === Booleans & Conditionals ===
+let is_vr_enabled = true
+if (is_vr_enabled) {
+    print("VR mode is ACTIVE")
+} else {
+    print("VR mode is INACTIVE")
+}
+
+// === For Loop ===
+let colors = ["red", "green", "blue", "purple"]
+print("Available VR colors:")
+for color in colors {
+    print(" -", color)
+}
+
+// === Function Definition ===
+fn greet(person_name) {
+    print("👋 Greetings,", person_name, "!")
+}
+
+greet("Alice")
+greet("Bob")
+greet("Virtual Traveler")
+
+// === Nested Conditionals ===
+let score = 85
+if (score >= 90) {
+    print("Grade: A")
+} else if (score >= 80) {
+    print("Grade: B")
+} else if (score >= 70) {
+    print("Grade: C")
+} else {
+    print("Grade: F")
+}
+
+print("✅ Hello World complete!")
