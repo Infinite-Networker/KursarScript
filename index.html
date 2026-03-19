@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KursarScript — VR Programming Language by Cherry Computer Ltd.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cherry:       #e8003d;
+      --cherry-light: #ff2255;
+      --cherry-glow:  #ff003380;
+      --neon-cyan:    #00f5ff;
+      --neon-purple:  #bf00ff;
+      --neon-green:   #39ff14;
+      --dark-bg:      #030008;
+      --card-bg:      #0a001a;
+      --card-border:  #2a0050;
+      --text-primary: #f0e6ff;
+      --text-muted:   #9070b0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px;
+      overflow-x: hidden;
+    }
+
+    /* ─── ANIMATED BACKGROUND ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 20%, #1a003380 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 80%, #00002a80 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 60% 10%, #3d001080 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Grid overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--dark-bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cherry); border-radius: 3px; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 64px;
+      background: rgba(3, 0, 8, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(232, 0, 61, 0.3);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--cherry), var(--neon-purple));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 0.85rem;
+      color: #fff;
+      box-shadow: 0 0 20px var(--cherry-glow);
+    }
+
+    .nav-title {
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: var(--text-primary);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      letter-spacing: 1px;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--neon-cyan); }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--cherry), #a0002a);
+      color: #fff !important;
+      padding: 0.4rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600 !important;
+      transition: box-shadow 0.2s, color 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      box-shadow: 0 0 20px var(--cherry-glow) !important;
+      color: #fff !important;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(232, 0, 61, 0.12);
+      border: 1px solid rgba(232, 0, 61, 0.4);
+      color: var(--cherry-light);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--cherry-light);
+      box-shadow: 0 0 8px var(--cherry-light);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-logo-wrap {
+      position: relative;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-logo-ring {
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      background: conic-gradient(from 0deg, var(--cherry), var(--neon-purple), var(--neon-cyan), var(--cherry)) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      animation: spin 6s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hero-icon {
+      width: 120px; height: 120px;
+      background: linear-gradient(135deg, #1a0035, #08001a);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      box-shadow:
+        0 0 40px rgba(232, 0, 61, 0.4),
+        0 0 80px rgba(191, 0, 255, 0.2),
+        inset 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    .hero-title {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      line-height: 1.05;
+      letter-spacing: 4px;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 0%, var(--neon-cyan) 40%, var(--cherry-light) 80%, #ffffff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 30px rgba(232, 0, 61, 0.4));
+    }
+
+    .hero-subtitle {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.7rem, 2vw, 0.95rem);
+      letter-spacing: 6px;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .hero-desc {
+      max-width: 640px;
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    .hero-desc strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 4rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 2rem;
+      border-radius: 8px;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: all 0.25s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cherry), #a0002a);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(232, 0, 61, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(232, 0, 61, 0.7);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0, 245, 255, 0.4);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 245, 255, 0.08);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+
+    /* Stats strip */
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 2.5rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--cherry-light);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* ─── SECTIONS COMMON ─── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--cherry-light);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 0%, var(--neon-cyan) 60%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-sub {
+      color: var(--text-muted);
+      max-width: 560px;
+      line-height: 1.7;
+      font-size: 1.05rem;
+      font-weight: 300;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .text-center { text-align: center; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+
+    /* ─── FEATURE CARDS ─── */
+    #features { background: rgba(0,0,0,0.3); }
+
+    .features-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg, rgba(15, 0, 30, 0.8), rgba(5, 0, 15, 0.9));
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cherry), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(232, 0, 61, 0.5);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(232, 0, 61, 0.15);
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .icon-red    { background: rgba(232, 0, 61, 0.12);   border: 1px solid rgba(232, 0, 61, 0.25); }
+    .icon-cyan   { background: rgba(0, 245, 255, 0.08);  border: 1px solid rgba(0, 245, 255, 0.2); }
+    .icon-purple { background: rgba(191, 0, 255, 0.08);  border: 1px solid rgba(191, 0, 255, 0.2); }
+    .icon-green  { background: rgba(57, 255, 20, 0.08);  border: 1px solid rgba(57, 255, 20, 0.2); }
+
+    .feature-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+
+    .feature-desc {
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+      font-weight: 300;
+    }
+
+    .feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 1rem;
+    }
+
+    .tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+    }
+
+    /* ─── CODE SHOWCASE ─── */
+    #syntax {
+      background: transparent;
+    }
+
+    .syntax-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .code-window {
+      background: #0d0020;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 20px 60px rgba(0,0,0,0.6),
+        0 0 80px rgba(191, 0, 255, 0.1);
+    }
+
+    .code-titlebar {
+      background: rgba(255,255,255,0.04);
+      padding: 0.85rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red    { background: #ff5f57; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green  { background: #28ca41; }
+
+    .code-filename {
+      margin-left: 0.5rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .code-body {
+      padding: 1.8rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .code-line { display: block; }
+    .c-comment  { color: #555577; }
+    .c-keyword  { color: var(--cherry-light); font-weight: 600; }
+    .c-type     { color: var(--neon-cyan); }
+    .c-string   { color: var(--neon-green); }
+    .c-number   { color: #ff9940; }
+    .c-func     { color: #c792ea; }
+    .c-var      { color: var(--text-primary); }
+    .c-op       { color: #89ddff; }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .tab-btn {
+      padding: 0.65rem 1.2rem;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--cherry-light);
+      border-bottom-color: var(--cherry-light);
+    }
+
+    .tab-btn:hover:not(.active) { color: var(--text-primary); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ─── BUILT-IN TYPES ─── */
+    #types {
+      background: rgba(0,0,0,0.3);
+    }
+
+    .types-grid {
+      max-width: 1200px;
+      margin: 3rem auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .type-card {
+      background: linear-gradient(135deg, rgba(15,0,30,0.9), rgba(5,0,15,0.95));
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .type-card:hover {
+      border-color: rgba(0,245,255,0.4);
+      box-shadow: 0 0 30px rgba(0,245,255,0.08);
+      transform: translateY(-3px);
+    }
+
+    .type-header {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .type-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    .td-red    { background: var(--cherry);     box-shadow: 0 0 8px var(--cherry); }
+    .td-cyan   { background: var(--neon-cyan);  box-shadow: 0 0 8px var(--neon-cyan); }
+    .td-purple { background: var(--neon-purple);box-shadow: 0 0 8px var(--neon-purple); }
+    .td-green  { background: var(--neon-green); box-shadow: 0 0 8px var(--neon-green); }
+
+    .type-name {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+
+    .type-badge {
+      margin-left: auto;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text-muted);
+    }
+
+    .type-methods {
+      padding: 1.2rem 1.5rem;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .type-methods li {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.02);
+      transition: background 0.2s;
+    }
+
+    .type-methods li:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-primary);
+    }
+
+    .type-methods .meth-name { color: var(--neon-cyan); }
+    .type-methods .meth-paren { color: #89ddff; }
+
+    /* ─── ABOUT / CREATOR ─── */
+    #about {
+      background: transparent;
+    }
+
+    .about-layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .cherry-brand-card {
+      background: linear-gradient(135deg, rgba(232, 0, 61, 0.08) 0%, rgba(10, 0, 26, 0.95) 60%);
+      border: 1px solid rgba(232, 0, 61, 0.35);
+      border-radius: 20px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cherry-brand-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,0,61,0.15) 0%, transparent 70%);
+    }
+
+    .cherry-logo-big {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, var(--cherry), #700020);
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1.4rem;
+      color: #fff;
+      box-shadow: 0 0 30px rgba(232, 0, 61, 0.5);
+      margin-bottom: 1.5rem;
+    }
+
+    .cherry-company {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--cherry-light);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .cherry-tagline {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .cherry-divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--cherry), transparent);
+      margin: 1.5rem 0;
+    }
+
+    .cherry-desc {
+      color: var(--text-muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
+      font-weight: 300;
+    }
+
+    .about-text .section-title { text-align: left; }
+    .about-text .section-sub { max-width: 100%; margin-bottom: 2rem; }
+
+    .about-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .about-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .about-list .chk {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(232,0,61,0.12);
+      border: 1px solid rgba(232,0,61,0.3);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cherry-light);
+      font-size: 0.7rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ─── INSTALL ─── */
+    #install {
+      background: rgba(0,0,0,0.3);
+    }
+
+    .install-layout {
+      max-width: 900px;
+      margin: 3rem auto 0;
+    }
+
+    .install-step {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--cherry), #700020);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(232,0,61,0.4);
+    }
+
+    .step-body { flex: 1; }
+
+    .step-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      margin-bottom: 0.6rem;
+    }
+
+    .code-inline {
+      background: #0d0020;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1rem 1.4rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--neon-green);
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .code-inline .prompt { color: var(--cherry); user-select: none; }
+
+    /* ─── ROADMAP ─── */
+    #roadmap {
+      background: transparent;
+    }
+
+    .roadmap-track {
+      max-width: 800px;
+      margin: 3rem auto 0;
+      position: relative;
+    }
+
+    .roadmap-track::before {
+      content: '';
+      position: absolute;
+      left: 19px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--cherry), var(--neon-purple), var(--neon-cyan), transparent);
+    }
+
+    .road-item {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+      align-items: flex-start;
+    }
+
+    .road-dot {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .road-dot.done {
+      background: linear-gradient(135deg, var(--cherry), #600018);
+      box-shadow: 0 0 20px rgba(232,0,61,0.5);
+    }
+
+    .road-dot.active {
+      background: linear-gradient(135deg, var(--neon-purple), #600090);
+      box-shadow: 0 0 20px rgba(191,0,255,0.5);
+      animation: glow-pulse 2s ease-in-out infinite;
+    }
+
+    .road-dot.coming {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    @keyframes glow-pulse {
+      0%,100% { box-shadow: 0 0 20px rgba(191,0,255,0.5); }
+      50%      { box-shadow: 0 0 40px rgba(191,0,255,0.9); }
+    }
+
+    .road-content {
+      background: linear-gradient(135deg, rgba(15,0,30,0.8), rgba(5,0,15,0.9));
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      flex: 1;
+    }
+
+    .road-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .road-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .road-status {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-top: 0.6rem;
+    }
+
+    .rs-done   { background: rgba(232,0,61,0.15); color: var(--cherry-light); border: 1px solid rgba(232,0,61,0.3); }
+    .rs-active { background: rgba(191,0,255,0.15); color: #df80ff; border: 1px solid rgba(191,0,255,0.3); }
+    .rs-coming { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative;
+      z-index: 1;
+      background: rgba(0,0,0,0.6);
+      border-top: 1px solid rgba(232, 0, 61, 0.2);
+      padding: 3rem 2rem 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .footer-brand h3 {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+    }
+
+    .footer-brand p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    .footer-links h4 {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cherry-light);
+      margin-bottom: 1rem;
+    }
+
+    .footer-links ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 300;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--neon-cyan); }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 300;
+    }
+
+    .footer-copy strong { color: var(--cherry-light); }
+
+    .footer-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cherry);
+      box-shadow: 0 0 6px var(--cherry);
+    }
+
+    /* ─── FLOATING PARTICLES ─── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      animation: float-up linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes float-up {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.2; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .syntax-layout, .about-layout {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .nav-links { display: none; }
+
+      .hero-stats { gap: 1.5rem; }
+    }
+
+    @media (max-width: 600px) {
+      .footer-top { flex-direction: column; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+
+    /* ─── NEON SEPARATOR ─── */
+    .neon-sep {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cherry), var(--neon-purple), var(--neon-cyan), transparent);
+      margin: 0;
+      opacity: 0.4;
+    }
+
+    /* ─── GLOW HEADINGS ─── */
+    .glow-red   { text-shadow: 0 0 20px rgba(232,0,61,0.6); }
+    .glow-cyan  { text-shadow: 0 0 20px rgba(0,245,255,0.6); }
+  </style>
+</head>
+<body>
+
+<!-- ─── PARTICLES ─── -->
+<div class="particles" id="particles"></div>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="#hero" class="nav-brand">
+    <div class="nav-logo">KS</div>
+    <span class="nav-title">KursarScript</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#syntax">Syntax</a></li>
+    <li><a href="#types">API</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#install">Install</a></li>
+    <li><a href="https://github.com/Infinite-Networker/KursarScript" target="_blank" class="nav-cta">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-badge">Cherry Computer Ltd. — Official Release</div>
+
+  <div class="hero-logo-wrap">
+    <div class="hero-logo-ring"></div>
+    <div class="hero-icon">🌐</div>
+  </div>
+
+  <h1 class="hero-title">KursarScript</h1>
+  <p class="hero-subtitle">Virtual Reality Programming Language</p>
+
+  <p class="hero-desc">
+    A <strong>groundbreaking programming language</strong> designed for virtual reality environments
+    and digital economies. Create, manage, and scale virtual marketplaces, avatar interactions,
+    and immersive transactions with an intuitive syntax built for the metaverse.
+  </p>
+
+  <div class="hero-buttons">
+    <a href="#install" class="btn btn-primary">⚡ Get Started</a>
+    <a href="#syntax"  class="btn btn-secondary">{ } Explore Syntax</a>
+    <a href="https://github.com/Infinite-Networker/KursarScript" target="_blank" class="btn btn-ghost">★ GitHub</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-value">117</span>
+      <span class="stat-label">Automated Tests</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">4</span>
+      <span class="stat-label">Built-in VR Types</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">5</span>
+      <span class="stat-label">Example Scripts</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">MIT</span>
+      <span class="stat-label">License</span>
+    </div>
+  </div>
+</section>
+
+<div class="neon-sep"></div>
+
+<!-- ─── FEATURES ─── -->
+<section id="features">
+  <div class="features-header">
+    <span class="section-label">Core Capabilities</span>
+    <h2 class="section-title">Everything You Need for VR Development</h2>
+    <p class="section-sub mx-auto text-center" style="margin:0 auto;">
+      KursarScript ships with built-in primitives for the virtual world — no external libraries needed.
+    </p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon icon-red">🎮</div>
+      <h3 class="feature-title">VR Integration</h3>
+      <p class="feature-desc">Native avatar management, virtual terminals, and portal connections across different VR spaces with real-time economy operations.</p>
+      <div class="feature-tags">
+        <span class="tag">Avatar</span>
+        <span class="tag">Portals</span>
+        <span class="tag">Terminals</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon icon-cyan">💳</div>
+      <h3 class="feature-title">Digital Economy</h3>
+      <p class="feature-desc">Virtu-Card system with secure storage, digital denominations, built-in transaction history, and layered security levels.</p>
+      <div class="feature-tags">
+        <span class="tag">VirtuCard</span>
+        <span class="tag">Transfer</span>
+        <span class="tag">Security</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon icon-purple">🏗️</div>
+      <h3 class="feature-title">OOP Design</h3>
+      <p class="feature-desc">Classes, fields, and methods with a simplified object model optimized for VR environments. Inline and multi-line method bodies supported.</p>
+      <div class="feature-tags">
+        <span class="tag">Classes</span>
+        <span class="tag">Fields</span>
+        <span class="tag">Methods</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon icon-green">🤖</div>
+      <h3 class="feature-title">AI-Inspired Logic</h3>
+      <p class="feature-desc">Smart operations for automated currency exchange, adaptive object behavior, and virtual intelligence for NPCs and automated systems.</p>
+      <div class="feature-tags">
+        <span class="tag">Smart Ops</span>
+        <span class="tag">NPCs</span>
+        <span class="tag">Adaptive</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon icon-red">🛒</div>
+      <h3 class="feature-title">Marketplace Engine</h3>
+      <p class="feature-desc">List, buy, and sell virtual items with rarity multipliers. VirtualItem supports common through legendary tiers with dynamic value calculation.</p>
+      <div class="feature-tags">
+        <span class="tag">Rarity</span>
+        <span class="tag">Listings</span>
+        <span class="tag">Inventory</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon icon-cyan">🖥️</div>
+      <h3 class="feature-title">Interactive REPL</h3>
+      <p class="feature-desc">Full-featured interactive shell for rapid prototyping. Run scripts, experiment with syntax, and test VR systems instantly from the command line.</p>
+      <div class="feature-tags">
+        <span class="tag">REPL</span>
+        <span class="tag">CLI</span>
+        <span class="tag">PyPI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-sep"></div>
+
+<!-- ─── SYNTAX ─── -->
+<section id="syntax">
+  <div class="syntax-layout">
+    <!-- Left: copy -->
+    <div>
+      <span class="section-label">Language Syntax</span>
+      <h2 class="section-title">Clean. Expressive.<br/>Built for the Metaverse.</h2>
+      <p class="section-sub" style="margin-bottom:2rem;">
+        KursarScript (KSPL) draws inspiration from modern scripting languages while adding first-class
+        primitives for virtual economies — so you spend less time wiring and more time building.
+      </p>
+
+      <ul class="about-list">
+        <li>
+          <span class="chk">✓</span>
+          <span><strong style="color:#fff">Familiar syntax</strong> — <code style="color:var(--neon-cyan);font-family:'Share Tech Mono',monospace;font-size:0.85em">let</code>, <code style="color:var(--neon-cyan);font-family:'Share Tech Mono',monospace;font-size:0.85em">fn</code>, <code style="color:var(--neon-cyan);font-family:'Share Tech Mono',monospace;font-size:0.85em">class</code>, <code style="color:var(--neon-cyan);font-family:'Share Tech Mono',monospace;font-size:0.85em">for</code>, <code style="color:var(--neon-cyan);font-family:'Share Tech Mono',monospace;font-size:0.85em">while</code> feel instantly natural.</span>
+        </li>
+        <li>
+          <span class="chk">✓</span>
+          <span><strong style="color:#fff">VR built-ins</strong> — <code style="color:var(--neon-cyan);font-family:'Share Tech Mono',monospace;font-size:0.85em">Avatar</code>, <code style="color:var(--neon-cyan);font-family:'Share Tech Mono',monospace;font-size:0.85em">VirtuCard</code>, <code style="color:var(--neon-cyan);font-family:'Share Tech Mono',monospace;font-size:0.85em">VirtualTerminal</code>, and <code style="color:var(--neon-cyan);font-family:'Share Tech Mono',monospace;font-size:0.85em">VirtualItem</code> are first-class.</span>
+        </li>
+        <li>
+          <span class="chk">✓</span>
+          <span><strong style="color:#fff">No inheritance</strong> — a simplified, flat object model that's easier to reason about in complex VR systems.</span>
+        </li>
+        <li>
+          <span class="chk">✓</span>
+          <span><strong style="color:#fff">Multi-line expressions</strong> — lists, dicts, and arithmetic can span multiple lines cleanly.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Right: code window -->
+    <div class="code-window">
+      <div class="code-titlebar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="code-filename">economy.kursar</span>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'tab-economy')">Economy</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-class')">Classes</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-flow')">Control Flow</button>
+      </div>
+
+      <!-- Economy tab -->
+      <div class="code-body tab-content active" id="tab-economy">
+<span class="code-line"><span class="c-comment">// Create VR avatars with VirtuCards</span></span>
+<span class="code-line"><span class="c-keyword">let</span> <span class="c-var">alice</span> <span class="c-op">=</span> <span class="c-type">Avatar</span>(<span class="c-string">"Alice_VR"</span>, <span class="c-string">"explorer"</span>)</span>
+<span class="code-line"><span class="c-var">alice</span>.<span class="c-var">virtucard</span> <span class="c-op">=</span> <span class="c-func">create_virtucard</span>(<span class="c-var">alice</span>, <span class="c-number">1000.0</span>)</span>
+<span class="code-line"><span class="c-var">alice</span>.<span class="c-var">virtucard</span>.<span class="c-func">set_security</span>(<span class="c-string">"high"</span>)</span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line"><span class="c-comment">// Build a virtual marketplace</span></span>
+<span class="code-line"><span class="c-keyword">let</span> <span class="c-var">shop</span> <span class="c-op">=</span> <span class="c-type">VirtualTerminal</span>(<span class="c-string">"NexusMarket"</span>, <span class="c-string">"general"</span>)</span>
+<span class="code-line"><span class="c-var">shop</span>.<span class="c-func">list_item</span>(<span class="c-string">"Health Potion"</span>, <span class="c-number">25.0</span>, <span class="c-string">"Restores 50 HP"</span>)</span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line"><span class="c-comment">// Purchase &amp; transfer</span></span>
+<span class="code-line"><span class="c-var">shop</span>.<span class="c-func">purchase</span>(<span class="c-string">"Health Potion"</span>, <span class="c-var">alice</span>.<span class="c-var">virtucard</span>)</span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line"><span class="c-keyword">let</span> <span class="c-var">bob</span> <span class="c-op">=</span> <span class="c-type">Avatar</span>(<span class="c-string">"Bob_VR"</span>, <span class="c-string">"merchant"</span>)</span>
+<span class="code-line"><span class="c-var">bob</span>.<span class="c-var">virtucard</span> <span class="c-op">=</span> <span class="c-func">create_virtucard</span>(<span class="c-var">bob</span>, <span class="c-number">500.0</span>)</span>
+<span class="code-line"><span class="c-func">transfer</span>(<span class="c-var">alice</span>.<span class="c-var">virtucard</span>, <span class="c-var">bob</span>.<span class="c-var">virtucard</span>, <span class="c-number">100.0</span>)</span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line"><span class="c-comment">// Legendary item with rarity multiplier</span></span>
+<span class="code-line"><span class="c-keyword">let</span> <span class="c-var">sword</span> <span class="c-op">=</span> <span class="c-type">VirtualItem</span>(<span class="c-string">"Dragon Sword"</span>, <span class="c-string">"weapon"</span>, <span class="c-number">1000.0</span>)</span>
+<span class="code-line"><span class="c-var">sword</span>.<span class="c-func">set_rarity</span>(<span class="c-string">"legendary"</span>)  <span class="c-comment">// 10× multiplier</span></span>
+<span class="code-line"><span class="c-func">print</span>(<span class="c-var">sword</span>.<span class="c-func">calculate_value</span>())  <span class="c-comment">// 10000.0</span></span>
+      </div>
+
+      <!-- Classes tab -->
+      <div class="code-body tab-content" id="tab-class">
+<span class="code-line"><span class="c-keyword">class</span> <span class="c-type">Player</span> {</span>
+<span class="code-line">  <span class="c-keyword">field</span> <span class="c-var">health</span> <span class="c-op">=</span> <span class="c-number">100</span></span>
+<span class="code-line">  <span class="c-keyword">field</span> <span class="c-var">name</span>   <span class="c-op">=</span> <span class="c-string">""</span></span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line">  <span class="c-keyword">fn</span> <span class="c-func">init</span>(<span class="c-var">player_name</span>) {</span>
+<span class="code-line">    <span class="c-keyword">self</span>.<span class="c-var">name</span> <span class="c-op">=</span> <span class="c-var">player_name</span></span>
+<span class="code-line">  }</span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line">  <span class="c-comment">// Inline method bodies</span></span>
+<span class="code-line">  <span class="c-keyword">fn</span> <span class="c-func">heal</span>(<span class="c-var">amt</span>) { <span class="c-keyword">self</span>.<span class="c-var">health</span> <span class="c-op">=</span> <span class="c-keyword">self</span>.<span class="c-var">health</span> <span class="c-op">+</span> <span class="c-var">amt</span> }</span>
+<span class="code-line">  <span class="c-keyword">fn</span> <span class="c-func">is_alive</span>() { <span class="c-keyword">return</span> <span class="c-keyword">self</span>.<span class="c-var">health</span> <span class="c-op">&gt;</span> <span class="c-number">0</span> }</span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line">  <span class="c-keyword">fn</span> <span class="c-func">describe</span>() {</span>
+<span class="code-line">    <span class="c-func">print</span>(<span class="c-string">"Player:"</span>, <span class="c-keyword">self</span>.<span class="c-var">name</span>, <span class="c-string">"HP:"</span>, <span class="c-keyword">self</span>.<span class="c-var">health</span>)</span>
+<span class="code-line">  }</span>
+<span class="code-line">}</span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line"><span class="c-keyword">let</span> <span class="c-var">hero</span> <span class="c-op">=</span> <span class="c-type">Player</span>(<span class="c-string">"Nova"</span>)</span>
+<span class="code-line"><span class="c-var">hero</span>.<span class="c-func">heal</span>(<span class="c-number">50</span>)</span>
+<span class="code-line"><span class="c-var">hero</span>.<span class="c-func">describe</span>()  <span class="c-comment">// Player: Nova HP: 150</span></span>
+      </div>
+
+      <!-- Control Flow tab -->
+      <div class="code-body tab-content" id="tab-flow">
+<span class="code-line"><span class="c-comment">// Conditional branches</span></span>
+<span class="code-line"><span class="c-keyword">if</span> (<span class="c-var">balance</span> <span class="c-op">&gt;</span> <span class="c-number">500</span>) {</span>
+<span class="code-line">  <span class="c-func">print</span>(<span class="c-string">"Rich!"</span>)</span>
+<span class="code-line">} <span class="c-keyword">else if</span> (<span class="c-var">balance</span> <span class="c-op">&gt;</span> <span class="c-number">100</span>) {</span>
+<span class="code-line">  <span class="c-func">print</span>(<span class="c-string">"Okay"</span>)</span>
+<span class="code-line">} <span class="c-keyword">else</span> {</span>
+<span class="code-line">  <span class="c-func">print</span>(<span class="c-string">"Need credits"</span>)</span>
+<span class="code-line">}</span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line"><span class="c-comment">// For loop with range</span></span>
+<span class="code-line"><span class="c-keyword">for</span> <span class="c-var">i</span> <span class="c-keyword">in</span> <span class="c-func">range</span>(<span class="c-number">1</span>, <span class="c-number">6</span>) {</span>
+<span class="code-line">  <span class="c-func">print</span>(<span class="c-var">i</span>)</span>
+<span class="code-line">}</span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line"><span class="c-comment">// Break &amp; continue</span></span>
+<span class="code-line"><span class="c-keyword">for</span> <span class="c-var">x</span> <span class="c-keyword">in</span> [<span class="c-number">1</span>, <span class="c-number">2</span>, <span class="c-number">3</span>, <span class="c-number">4</span>, <span class="c-number">5</span>] {</span>
+<span class="code-line">  <span class="c-keyword">if</span> (<span class="c-var">x</span> <span class="c-op">==</span> <span class="c-number">3</span>) { <span class="c-keyword">continue</span> }</span>
+<span class="code-line">  <span class="c-keyword">if</span> (<span class="c-var">x</span> <span class="c-op">==</span> <span class="c-number">5</span>) { <span class="c-keyword">break</span> }</span>
+<span class="code-line">  <span class="c-func">print</span>(<span class="c-var">x</span>)</span>
+<span class="code-line">}</span>
+<span class="code-line">&nbsp;</span>
+<span class="code-line"><span class="c-comment">// While loop</span></span>
+<span class="code-line"><span class="c-keyword">let</span> <span class="c-var">count</span> <span class="c-op">=</span> <span class="c-number">0</span></span>
+<span class="code-line"><span class="c-keyword">while</span> (<span class="c-var">count</span> <span class="c-op">&lt;</span> <span class="c-number">5</span>) {</span>
+<span class="code-line">  <span class="c-var">count</span> <span class="c-op">=</span> <span class="c-var">count</span> <span class="c-op">+</span> <span class="c-number">1</span></span>
+<span class="code-line">}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-sep"></div>
+
+<!-- ─── BUILT-IN TYPES ─── -->
+<section id="types">
+  <div class="container text-center">
+    <span class="section-label">Built-in Types</span>
+    <h2 class="section-title">VR-Native API</h2>
+    <p class="section-sub mx-auto" style="margin:0 auto;">
+      Four powerful built-in types ship with every KursarScript installation.
+    </p>
+  </div>
+
+  <div class="types-grid">
+    <!-- Avatar -->
+    <div class="type-card">
+      <div class="type-header">
+        <span class="type-dot td-red"></span>
+        <span class="type-name">Avatar</span>
+        <span class="type-badge">Identity</span>
+      </div>
+      <ul class="type-methods">
+        <li><span class="meth-name">Avatar</span><span class="meth-paren">(name, role)</span></li>
+        <li><span class="meth-name">.set_attribute</span><span class="meth-paren">(key, value)</span></li>
+        <li><span class="meth-name">.get_attribute</span><span class="meth-paren">(key)</span></li>
+        <li><span class="meth-name">.get_inventory</span><span class="meth-paren">()</span></li>
+        <li><span class="meth-name">.virtucard</span> — attached VirtuCard</li>
+      </ul>
+    </div>
+
+    <!-- VirtuCard -->
+    <div class="type-card">
+      <div class="type-header">
+        <span class="type-dot td-cyan"></span>
+        <span class="type-name">VirtuCard</span>
+        <span class="type-badge">Finance</span>
+      </div>
+      <ul class="type-methods">
+        <li><span class="meth-name">create_virtucard</span><span class="meth-paren">(avatar, amount)</span></li>
+        <li><span class="meth-name">.debit</span><span class="meth-paren">(amount)</span></li>
+        <li><span class="meth-name">.credit</span><span class="meth-paren">(amount)</span></li>
+        <li><span class="meth-name">.set_security</span><span class="meth-paren">(level)</span></li>
+        <li><span class="meth-name">.get_history</span><span class="meth-paren">()</span></li>
+        <li><span class="meth-name">transfer</span><span class="meth-paren">(from, to, amount)</span></li>
+      </ul>
+    </div>
+
+    <!-- VirtualTerminal -->
+    <div class="type-card">
+      <div class="type-header">
+        <span class="type-dot td-purple"></span>
+        <span class="type-name">VirtualTerminal</span>
+        <span class="type-badge">Market</span>
+      </div>
+      <ul class="type-methods">
+        <li><span class="meth-name">VirtualTerminal</span><span class="meth-paren">(name, cat)</span></li>
+        <li><span class="meth-name">.list_item</span><span class="meth-paren">(name, price, desc)</span></li>
+        <li><span class="meth-name">.list_item</span><span class="meth-paren">(virtual_item)</span></li>
+        <li><span class="meth-name">.purchase</span><span class="meth-paren">(name, card)</span></li>
+        <li><span class="meth-name">.purchase_item</span><span class="meth-paren">(buyer, name, card)</span></li>
+        <li><span class="meth-name">.get_inventory</span><span class="meth-paren">()</span></li>
+      </ul>
+    </div>
+
+    <!-- VirtualItem -->
+    <div class="type-card">
+      <div class="type-header">
+        <span class="type-dot td-green"></span>
+        <span class="type-name">VirtualItem</span>
+        <span class="type-badge">Asset</span>
+      </div>
+      <ul class="type-methods">
+        <li><span class="meth-name">VirtualItem</span><span class="meth-paren">(name, type, base)</span></li>
+        <li><span class="meth-name">.set_rarity</span><span class="meth-paren">(level)</span></li>
+        <li><span class="meth-name">.calculate_value</span><span class="meth-paren">()</span></li>
+        <li><span class="meth-name">.set_attribute</span><span class="meth-paren">(key, value)</span></li>
+        <li><span class="meth-name">.get_attribute</span><span class="meth-paren">(key)</span></li>
+        <li style="color:#666;font-size:0.7rem;">common · uncommon · rare · epic · legendary</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="neon-sep"></div>
+
+<!-- ─── ABOUT / CREATOR ─── -->
+<section id="about">
+  <div class="about-layout">
+    <!-- Cherry Computer card -->
+    <div class="cherry-brand-card">
+      <div class="cherry-logo-big">CC</div>
+      <div class="cherry-company">Cherry Computer Ltd.</div>
+      <div class="cherry-tagline">Innovating Tomorrow's Virtual World</div>
+      <div class="cherry-divider"></div>
+      <p class="cherry-desc">
+        KursarScript is a product of <strong style="color:var(--cherry-light)">Cherry Computer Ltd.</strong> —
+        a forward-thinking technology company dedicated to building the tools and languages
+        that power the next generation of virtual reality and digital economy platforms.
+      </p>
+      <div class="cherry-divider"></div>
+      <p class="cherry-desc" style="font-size:0.82rem;margin-top:0;">
+        From the ground up, every feature in KursarScript reflects Cherry Computer's vision:
+        <em style="color:var(--text-primary)">programming for humans in virtual worlds.</em>
+      </p>
+    </div>
+
+    <!-- About text -->
+    <div class="about-text">
+      <span class="section-label">About the Project</span>
+      <h2 class="section-title">A Language Built<br/>for the Future</h2>
+      <p class="section-sub" style="margin-bottom:2rem;">
+        KursarScript addresses a gap that mainstream languages have ignored — the need for
+        first-class VR economy primitives in the language itself, not bolted on as libraries.
+      </p>
+
+      <ul class="about-list">
+        <li>
+          <span class="chk">✓</span>
+          <span>Developed entirely by <strong style="color:#fff">Cherry Computer Ltd.</strong> as an open-source contribution to the VR developer community.</span>
+        </li>
+        <li>
+          <span class="chk">✓</span>
+          <span>Powered by a pure-Python interpreter and compiler, making it portable across every major platform.</span>
+        </li>
+        <li>
+          <span class="chk">✓</span>
+          <span>Backed by <strong style="color:#fff">117 automated tests</strong> covering all language constructs and VR economy operations.</span>
+        </li>
+        <li>
+          <span class="chk">✓</span>
+          <span>Published under the <strong style="color:#fff">MIT License</strong> — free for personal, commercial, and research use.</span>
+        </li>
+        <li>
+          <span class="chk">✓</span>
+          <span>Actively maintained with a clear <strong style="color:#fff">public roadmap</strong> and growing example library.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="neon-sep"></div>
+
+<!-- ─── INSTALL ─── -->
+<section id="install">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:1rem;">
+      <span class="section-label">Installation</span>
+      <h2 class="section-title">Up &amp; Running in Seconds</h2>
+      <p class="section-sub mx-auto" style="margin:0 auto 3rem;">
+        KursarScript runs on any Python 3.8+ environment with no native dependencies.
+      </p>
+    </div>
+
+    <div class="install-layout">
+      <div class="install-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Install from PyPI</div>
+          <div class="code-inline">
+            <span class="prompt">$ </span>pip install kursarscript
+          </div>
+        </div>
+      </div>
+
+      <div class="install-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Or clone from source</div>
+          <div class="code-inline">
+<span class="prompt">$ </span>git clone https://github.com/Infinite-Networker/KursarScript.git<br/>
+<span class="prompt">$ </span>cd KursarScript<br/>
+<span class="prompt">$ </span>pip install -e .
+          </div>
+        </div>
+      </div>
+
+      <div class="install-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Run a script</div>
+          <div class="code-inline">
+<span class="prompt">$ </span>kursarscript examples/hello_world.kursar<br/>
+<span class="prompt">$ </span>kursarscript examples/economy.kursar
+          </div>
+        </div>
+      </div>
+
+      <div class="install-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Launch the interactive REPL</div>
+          <div class="code-inline">
+<span class="prompt">$ </span>kursarscript --interactive<br/>
+<span style="color:var(--text-muted)">&gt;&gt;&gt; </span><span style="color:var(--neon-green)">let x = Avatar("Me", "developer")</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-sep"></div>
+
+<!-- ─── ROADMAP ─── -->
+<section id="roadmap">
+  <div class="text-center container" style="margin-bottom:1rem;">
+    <span class="section-label">Development Roadmap</span>
+    <h2 class="section-title">What's Coming Next</h2>
+    <p class="section-sub mx-auto" style="margin:0 auto;">
+      Cherry Computer Ltd. is actively expanding KursarScript's capabilities.
+    </p>
+  </div>
+
+  <div class="roadmap-track">
+    <div class="road-item">
+      <div class="road-dot done">✓</div>
+      <div class="road-content">
+        <div class="road-title">Core Language Interpreter</div>
+        <div class="road-desc">Variables, functions, classes, control flow, loops, break/continue, multi-line expressions.</div>
+        <span class="road-status rs-done">Shipped</span>
+      </div>
+    </div>
+
+    <div class="road-item">
+      <div class="road-dot done">✓</div>
+      <div class="road-content">
+        <div class="road-title">VR Economy Primitives</div>
+        <div class="road-desc">Avatar, VirtuCard, VirtualTerminal, VirtualItem with rarity system and transaction history.</div>
+        <span class="road-status rs-done">Shipped</span>
+      </div>
+    </div>
+
+    <div class="road-item">
+      <div class="road-dot done">✓</div>
+      <div class="road-content">
+        <div class="road-title">CLI &amp; Interactive REPL</div>
+        <div class="road-desc">Full-featured command-line interface, interactive shell, and python -m support.</div>
+        <span class="road-status rs-done">Shipped</span>
+      </div>
+    </div>
+
+    <div class="road-item">
+      <div class="road-dot active">⚡</div>
+      <div class="road-content">
+        <div class="road-title">PyPI Publication</div>
+        <div class="road-desc">Publishing KursarScript to the Python Package Index for one-command installation globally.</div>
+        <span class="road-status rs-active">In Progress</span>
+      </div>
+    </div>
+
+    <div class="road-item">
+      <div class="road-dot coming">○</div>
+      <div class="road-content">
+        <div class="road-title">Extended Standard Library</div>
+        <div class="road-desc">Networking, physics simulation hooks, and advanced NPC behavior modules.</div>
+        <span class="road-status rs-coming">Planned</span>
+      </div>
+    </div>
+
+    <div class="road-item">
+      <div class="road-dot coming">○</div>
+      <div class="road-content">
+        <div class="road-title">VS Code Extension</div>
+        <div class="road-desc">Syntax highlighting, IntelliSense, and debugger integration for KursarScript (.kursar) files.</div>
+        <span class="road-status rs-coming">Planned</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-sep"></div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <h3>KursarScript</h3>
+        <p>A Cherry Computer Ltd. Project</p>
+      </div>
+
+      <div class="footer-links">
+        <h4>Language</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#syntax">Syntax Guide</a></li>
+          <li><a href="#types">API Reference</a></li>
+          <li><a href="#install">Installation</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="https://github.com/Infinite-Networker/KursarScript" target="_blank">GitHub Repository</a></li>
+          <li><a href="https://github.com/Infinite-Networker/KursarScript/tree/main/examples" target="_blank">Example Scripts</a></li>
+          <li><a href="https://github.com/Infinite-Networker/KursarScript/blob/main/docs/ROADMAP.md" target="_blank">Roadmap</a></li>
+          <li><a href="https://github.com/Infinite-Networker/KursarScript/blob/main/LICENSE" target="_blank">MIT License</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About Cherry Computer</a></li>
+          <li><a href="https://github.com/Infinite-Networker" target="_blank">GitHub Profile</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">
+        © 2024–2025 <strong>Cherry Computer Ltd.</strong> — All rights reserved.
+        KursarScript is open-source under the MIT License.
+      </p>
+      <div class="footer-badge">
+        <span class="badge-dot"></span>
+        Built by Cherry Computer Ltd.
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── SCRIPTS ─── -->
+<script>
+  /* Tab switching */
+  function switchTab(btn, tabId) {
+    const window = btn.closest('.code-window');
+    window.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    window.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  /* Floating particles */
+  (function spawnParticles() {
+    const container = document.getElementById('particles');
+    const colors = ['#e8003d','#00f5ff','#bf00ff','#39ff14','#ff2255'];
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = Math.random() * 4 + 1;
+      p.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random()*100}%;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        animation-duration:${Math.random()*15+10}s;
+        animation-delay:-${Math.random()*20}s;
+        box-shadow:0 0 ${size*2}px currentColor;
+      `;
+      container.appendChild(p);
+    }
+  })();
+
+  /* Smooth nav highlight */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active-nav'));
+        const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (link) link.style.color = 'var(--neon-cyan)';
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => observer.observe(s));
+
+  /* Animate stats on scroll */
+  const statValues = document.querySelectorAll('.stat-value');
+  const statObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.animation = 'pulse 0.4s ease-out';
+      }
+    });
+  }, { threshold: 0.8 });
+  statValues.forEach(s => statObserver.observe(s));
+</script>
+</body>
+</html>
